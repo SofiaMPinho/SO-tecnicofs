@@ -12,4 +12,8 @@
 
 #define DELAY (5000)
 
+#define INODE_BLOCK_NUMBER (10)
+#define BLOCK_INDEX_SIZE (sizeof(int))
+#define SUPPLEMENTARY_BLOCKS_NUMBER (BLOCK_SIZE / BLOCK_INDEX_SIZE)
+
 #endif // CONFIG_H
