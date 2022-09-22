@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
-#include <pthread.h>
 
 /*
  * Directory entry
@@ -24,10 +23,7 @@ typedef enum { T_FILE, T_DIRECTORY } inode_type;
 typedef struct {
     inode_type i_node_type;
     size_t i_size;
-    int i_data_blocks[INODE_BLOCK_NUMBER];
-    int extra_data_blocks;
-    pthread_rwlock_t rwl;
-    pthread_mutex_t mutex;
+    int i_data_block;
     /* in a real FS, more fields would exist here */
 } inode_t;
 
@@ -39,13 +35,9 @@ typedef enum { FREE = 0, TAKEN = 1 } allocation_state_t;
 typedef struct {
     int of_inumber;
     size_t of_offset;
-    pthread_rwlock_t rwl;
-    pthread_mutex_t mutex;
 } open_file_entry_t;
 
 #define MAX_DIR_ENTRIES (BLOCK_SIZE / sizeof(dir_entry_t))
-
-
 
 void state_init();
 void state_destroy();
@@ -60,9 +52,7 @@ int find_in_dir(int inumber, char const *sub_name);
 
 int data_block_alloc();
 int data_block_free(int block_number);
-int data_blocks_free(int blocks[]);
 void *data_block_get(int block_number);
-void initialize_index_block_entries(int block_number);
 
 int add_to_open_file_table(int inumber, size_t offset);
 int remove_from_open_file_table(int fhandle);
